@@ -1,6 +1,6 @@
 # RoboUniverse Workshop
 
-This is the code examples for the RoboUniverse workshop.
+These are the code examples for the RoboUniverse workshop.
 
 ## Intel Edison
 
