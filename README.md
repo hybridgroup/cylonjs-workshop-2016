@@ -1,6 +1,6 @@
-# RoboUniverse Workshop
+# Cylon.js Workshop 2016
 
-These are the code examples for the RoboUniverse workshop.
+These are the code examples for the Cylon.js workshop series for 2016.
 
 ## Intel Edison
 

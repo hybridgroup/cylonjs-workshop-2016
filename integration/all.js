@@ -26,7 +26,7 @@ cylon.robot({
     // i2c devices
     screen: { driver: "upm-jhd1313m1", connection: "edison" },
     // ollie
-    ollie: { driver: "ollie", connection: "ollie" }
+    ollie: { driver: "ollie", connection: "ollie", module: "cylon-sphero-ble" }
   },
   fireAlarm: function() {
     var that = this;
@@ -35,7 +35,16 @@ cylon.robot({
     if (deg >= 30) {
       that.writeMessage("Fire alarm!", "red");
       that.buzzer.digitalWrite(1);
-      that.ollie.setRGB(0xFF0000);
+      that.ollie.color(0xFF0000);
+      after((1).second(), function() {
+        my.ollie.spin("left", 200);
+      });
+      after((5).seconds(), function() {
+        my.ollie.spin("right", 200);
+      });
+      after((10).seconds(), function() {
+        my.ollie.stop();
+      });
       setTimeout(function() {
         that.buzzer.digitalWrite(0);
       }, 200);
@@ -47,7 +56,7 @@ cylon.robot({
       console.log("Sound detected:", val)
       that.writeMessage("Sound detected", "blue");
       that.led.turnOn();
-      that.ollie.setRGB(0x0000FF);
+      that.ollie.color(0x0000FF);
       setTimeout(function() {
         that.reset();
       }, 500);
@@ -61,7 +70,7 @@ cylon.robot({
       console.log("Light detected:", val)
       that.writeMessage("Light detected", "blue");
       that.led.turnOn();
-      that.ollie.setRGB(0x0000FF);
+      that.ollie.color(0x0000FF);
       setTimeout(function() {
         that.reset();
       }, 500);
@@ -109,7 +118,7 @@ cylon.robot({
     this.writeMessage("Doorbot ready");
     this.led.turnOff();
     this.buzzer.digitalWrite(0);
-    this.ollie.setRGB(0x00FF00);
+    this.ollie.color(0x00FF00);
   },
   work: function() {
     var that = this;

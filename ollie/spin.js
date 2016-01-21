@@ -2,15 +2,15 @@ var Cylon = require("cylon");
 
 Cylon.robot({
   connections: {
-    bluetooth: { adaptor: "central", uuid: "cc361e85785e", module: "cylon-ble"}
+    bluetooth: { adaptor: "central", uuid: "cc361e85785e", module: "cylon-ble" }
   },
 
   devices: {
-    ollie: { driver: "ollie"}
+    ollie: { driver: "ollie", module: "cylon-sphero-ble" }
   },
 
   work: function(my) {
-    my.ollie.setRGB(0xFF0000);
+    my.ollie.color(0xFF0000);
     after((1).second(), function() {
       my.ollie.spin("left", 200);
     });
@@ -21,7 +21,7 @@ Cylon.robot({
       my.ollie.stop();
     });
     after((12).seconds(), function() {
-      my.ollie.setRGB(0x0000FF);
+      my.ollie.color(0x0000FF);
     });
   }
 }).start();
