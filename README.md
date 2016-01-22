@@ -47,7 +47,3 @@ Connect the light sensor to A3
 ### roll.js
 
 ### spin.js
-
-## Integration
-
-### all.js
