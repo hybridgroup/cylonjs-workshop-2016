@@ -12,111 +12,95 @@ cylon.robot({
     edison: { adaptor: "intel-iot" }
   },
   devices: {
-    // digital sensors
+    // digital devices
     button: { driver: "button",        pin: 2, connection: "edison" },
-    led:    { driver: "led",           pin: 3, connection: "edison" },
+    blue:   { driver: "led",           pin: 3, connection: "edison" },
+    green:  { driver: "led",           pin: 4, connection: "edison" },
+    red:    { driver: "led",           pin: 5, connection: "edison" },
     buzzer: { driver: "direct-pin",    pin: 7, connection: "edison" },
     touch:  { driver: "button",        pin: 8, connection: "edison" },
-    // analog sensors
+    // analog devices
     dial:   { driver: "analogSensor",  pin: 0, connection: "edison" },
-    temp:   { driver: "upm-grovetemp", pin: 1, connection: "edison" },
-    sound:  { driver: "analogSensor",  pin: 2, connection: "edison" },
-    // i2c devices
-    screen: { driver: "upm-jhd1313m1", connection: "edison" }
+    temp:   { driver: "analogSensor",  pin: 1, connection: "edison" },
+    sound:  { driver: "analogSensor",  pin: 2, connection: "edison" }
   },
   fireAlarm: function() {
-    var that = this;
-    var deg = that.temp.value();
+    var self = this;
+    var deg = self.currentTemp;
     console.log("current temp:", deg);
-    if (deg >= 30) {
-      that.writeMessage("Fire alarm!", "red");
-      that.buzzer.digitalWrite(1);
+    if (deg >= 400) {
+      self.turnOn("red");
+      self.buzzer.digitalWrite(1);
       setTimeout(function() {
-        that.buzzer.digitalWrite(0);
+        self.buzzer.digitalWrite(0);
       }, 200);
     }
   },
   detectSound: function(val) {
-    var that = this;
+    var self = this;
     if (val >= 450) {
       console.log("Sound detected:", val)
-      that.writeMessage("Sound detected", "blue");
-      that.led.turnOn();
+      self.turnOn("blue");
       setTimeout(function() {
-        that.reset();
+        self.reset();
       }, 500);
     }
   },
   turnDial: function(val) {
-    var that = this;
     console.log("Turning dial:", val);
-    that.writeMessage("Turning dial: " + val, "green");
   },
   doorbell: function() {
-    var that = this;
-    that.buzzer.digitalWrite(1);
-    that.writeMessage("Doorbell pressed", "green");
+    var self = this;
+    self.buzzer.digitalWrite(1);
+    self.turnOn("blue");
     setTimeout(function() {
-      that.reset();
+      self.reset();
     }, 1000);
   },
-  writeMessage: function(message, color) {
-    var that = this;
-    var str = message.toString();
-    while (str.length < 16) {
-      str = str + " ";
-    }
-    console.log(message);
-    that.screen.setCursor(0,0);
-    that.screen.write(str);
-    switch(color)
-    {
-      case "red":
-        that.screen.setColor(255, 0, 0);
-        break;
-      case "green":
-        that.screen.setColor(0, 255, 0);
-        break;
-      case "blue":
-        that.screen.setColor(0, 0, 255);
-        break;
-      default:
-        that.screen.setColor(255, 255, 255);
-        break;
-    }
+  turnOn: function(color) {
+    this.turnOff();
+    this[color].turnOn();
+  },
+  turnOff: function() {
+    this.red.turnOff();
+    this.blue.turnOff();
+    this.green.turnOff();
   },
   reset: function() {
-    this.writeMessage("Doorbot ready");
-    this.led.turnOff();
+    console.log("Doorbot ready");
+    this.turnOn("green");
     this.buzzer.digitalWrite(0);
   },
-  work: function() {
-    var that = this;
-    that.reset();
+  work: function(self) {
+    self.currentTemp = 0;
+    self.reset();
 
-    that.button.on('push', function() {
-      that.led.turnOn();
-      that.writeMessage("Lights On", "blue");
+    self.button.on('push', function() {
+      self.turnOn("blue");
     });
 
-    that.button.on('release', function() {
-      that.reset();
+    self.button.on('release', function() {
+      self.reset();
     });
 
-    that.dial.on('analogRead', function(val) {
-      that.turnDial(val);
+    self.dial.on('analogRead', function(val) {
+      self.turnDial(val);
     });
 
-    that.sound.on('analogRead', function(val) {
-      that.detectSound(val);
+    self.temp.on('analogRead', function(val) {
+      self.currentTemp = val;
     });
 
-    that.touch.on('push', function() {
-      that.doorbell();
+    self.sound.on('analogRead', function(val) {
+      self.detectSound(val);
+    });
+
+    self.touch.on('push', function() {
+      self.doorbell();
     });
 
     setInterval(function() {
-      that.fireAlarm();
+      self.fireAlarm();
     }, 1000);
   }
 }).start();

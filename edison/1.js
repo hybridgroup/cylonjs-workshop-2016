@@ -6,13 +6,12 @@ cylon.robot({
     edison: { adaptor: "intel-iot" }
   },
   devices: {
-    led: { driver: "led", pin: 3, connection: "edison" }
+    // digital devices
+    blue:   { driver: "led",           pin: 3, connection: "edison" }
   },
-  work: function() {
-    var that = this;
-
+  work: function(self) {
     setInterval(function() {
-      that.led.toggle()
+      self.blue.toggle();
     }, 1000);
   }
 }).start();

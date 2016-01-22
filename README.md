@@ -4,39 +4,39 @@ These are the code examples for the Cylon.js workshop series for 2016.
 
 ## Intel Edison
 
-### 1.js - LED
+### 1.js - Blue LED
 
-Connect the LED to D3
+Connect the Blue LED to D3
 
-### 2.js - LED, Button
+### 2.js - Blue LED, Button
 
 Connect the button to D2
 
-### 3.js - LED, Button, LCD Display
+### 3.js - Blue LED, Button, Green LED
 
-Connect the RGB LCD display to I2C
+Connect the Green LED to D4
 
-### 4.js - LED, Button, LCD Display, API
+### 4.js - Blue LED, Button, Green LED, Cylon.js API
 
 Playing with the Cylon.js API
 
-### 5.js - LED, Button, LCD Display, API, Buzzer, Touch
+### 5.js - Blue LED, Button, Green LED, Cylon.js API, Buzzer, Touch
 
 Connect the buzzer to D7, and connect the touch sensor to D8
 
-### 6.js - LED, Button, LCD Display, API, Buzzer, Touch, Dial
+### 6.js - Blue LED, Button, Green LED, Cylon.js API, Buzzer, Touch, Dial
 
 Connect the rotary dial to A0
 
-### 7.js - LED, Button, LCD Display, API, Buzzer, Touch, Dial, Temperature
+### 7.js - Blue LED, Button, Green LED, Cylon.js API, Buzzer, Touch, Dial, Temperature, Red LED
 
-Connect the temperature sensor to A1
+Connect the temperature sensor to A1, and the Red LED to D5
 
-### 8.js - LED, Button, LCD Display, API, Buzzer, Touch, Dial, Temperature, Sound
+### 8.js - Blue LED, Button, Green LED, Cylon.js API, Buzzer, Touch, Dial, Temperature, Red LED, Sound
 
 Connect the sound sensor to A2
 
-### 9.js - LED, Button, LCD Display, API, Buzzer, Touch, Dial, Temperature, Sound, Light
+### 9.js - Blue LED, Button, Green LED, Cylon.js API, Buzzer, Touch, Dial, Temperature, Red LED, Sound, Light
 
 Connect the light sensor to A3
 
