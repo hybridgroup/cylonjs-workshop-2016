@@ -7,11 +7,11 @@ cylon.robot({
   },
   devices: {
     // digital devices
-    blue:   { driver: "led",           pin: 3, connection: "edison" }
+    blue:   { driver: "led", pin: 3, connection: "edison" }
   },
-  work: function(self) {
+  work: function(my) {
     setInterval(function() {
-      self.blue.toggle();
+      my.blue.toggle();
     }, 1000);
   }
 }).start();
