@@ -1,0 +1,123 @@
+var cylon = require("cylon");
+
+cylon.api({
+  host: "0.0.0.0",
+  port: "3000",
+  ssl: false
+});
+
+cylon.robot({
+  name: "airlockbot",
+  connections: {
+    arduino: { adaptor: "firmata", port: process.env.PORT }
+  },
+  devices: {
+    // digital devices
+    button: { driver: "button",        pin: 2, connection: "arduino" },
+    blue:   { driver: "led",           pin: 3, connection: "arduino" },
+    green:  { driver: "led",           pin: 4, connection: "arduino" },
+    red:    { driver: "led",           pin: 5, connection: "arduino" },
+    buzzer: { driver: "direct-pin",    pin: 7, connection: "arduino" },
+    touch:  { driver: "button",        pin: 8, connection: "arduino" },
+    // analog devices
+    dial:   { driver: "analogSensor",  pin: 0, connection: "arduino" },
+    temp:   { driver: "analogSensor",  pin: 1, connection: "arduino" },
+    sound:  { driver: "analogSensor",  pin: 2, connection: "arduino" },
+    light:  { driver: "analogSensor",  pin: 3, connection: "arduino" }
+  },
+  fireAlarm: function() {
+    var self = this;
+    var deg = self.currentTemp;
+    console.log("current temp:", deg);
+    if (deg >= 400) {
+      self.turnOn("red");
+      self.buzzer.digitalWrite(1);
+      setTimeout(function() {
+        self.buzzer.digitalWrite(0);
+      }, 200);
+    }
+  },
+  detectSound: function(val) {
+    var self = this;
+    if (val >= 450) {
+      console.log("Sound detected:", val)
+      self.turnOn("blue");
+      setTimeout(function() {
+        self.reset();
+      }, 500);
+    }
+  },
+  detectLight: function(val) {
+    var self = this;
+    var date = new Date();
+    var currentHour = date.getHours();
+    if (currentHour > 19 && currentHour < 8 && val >= 450) {
+      console.log("Light detected:", val)
+      self.turnOn("blue");
+      setTimeout(function() {
+        self.reset();
+      }, 500);
+    }
+  },
+  turnDial: function(val) {
+    console.log("Turning dial:", val);
+  },
+  doorbell: function() {
+    var self = this;
+    self.buzzer.digitalWrite(1);
+    self.turnOn("blue");
+    setTimeout(function() {
+      self.reset();
+    }, 1000);
+  },
+  turnOn: function(color) {
+    this.turnOff();
+    this[color].turnOn();
+  },
+  turnOff: function() {
+    this.red.turnOff();
+    this.blue.turnOff();
+    this.green.turnOff();
+  },
+  reset: function() {
+    console.log("Doorbot ready");
+    this.turnOn("green");
+    this.buzzer.digitalWrite(0);
+  },
+  work: function(self) {
+    self.currentTemp = 0;
+    self.reset();
+
+    self.button.on('push', function() {
+      self.turnOn("blue");
+    });
+
+    self.button.on('release', function() {
+      self.reset();
+    });
+
+    self.dial.on('analogRead', function(val) {
+      self.turnDial(val);
+    });
+
+    self.temp.on('analogRead', function(val) {
+      self.currentTemp = val;
+    });
+
+    self.sound.on('analogRead', function(val) {
+      self.detectSound(val);
+    });
+
+    self.light.on('analogRead', function(val) {
+      self.detectLight(val);
+    });
+
+    self.touch.on('push', function() {
+      self.doorbell();
+    });
+
+    setInterval(function() {
+      self.fireAlarm();
+    }, 1000);
+  }
+}).start();
