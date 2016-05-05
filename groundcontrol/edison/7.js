@@ -7,7 +7,7 @@ cylon.api({
 });
 
 cylon.robot({
-  name: "doorbot",
+  name: "airlockbot",
   connections: {
     edison: { adaptor: "intel-iot" }
   },
@@ -24,14 +24,14 @@ cylon.robot({
     temp:   { driver: "analogSensor",  pin: 1, connection: "edison" }
   },
   fireAlarm: function() {
-    var self = this;
-    var deg = self.currentTemp;
+    var my = this;
+    var deg = my.currentTemp;
     console.log("current temp:", deg);
     if (deg >= 400) {
-      self.turnOn("red");
-      self.buzzer.digitalWrite(1);
+      my.turnOn("red");
+      my.buzzer.digitalWrite(1);
       setTimeout(function() {
-        self.buzzer.digitalWrite(0);
+        my.buzzer.digitalWrite(0);
       }, 200);
     }
   },
@@ -39,11 +39,11 @@ cylon.robot({
     console.log("Turning dial:", val);
   },
   doorbell: function() {
-    var self = this;
-    self.buzzer.digitalWrite(1);
-    self.turnOn("blue");
+    var my = this;
+    my.buzzer.digitalWrite(1);
+    my.turnOn("blue");
     setTimeout(function() {
-      self.reset();
+      my.reset();
     }, 1000);
   },
   turnOn: function(color) {
@@ -56,36 +56,36 @@ cylon.robot({
     this.green.turnOff();
   },
   reset: function() {
-    console.log("Doorbot ready");
+    console.log("Airlock ready");
     this.turnOn("green");
     this.buzzer.digitalWrite(0);
   },
-  work: function(self) {
-    self.currentTemp = 0;
-    self.reset();
+  work: function(my) {
+    my.currentTemp = 0;
+    my.reset();
 
-    self.button.on('push', function() {
-      self.turnOn("blue");
+    my.button.on('push', function() {
+      my.turnOn("blue");
     });
 
-    self.button.on('release', function() {
-      self.reset();
+    my.button.on('release', function() {
+      my.reset();
     });
 
-    self.dial.on('analogRead', function(val) {
-      self.turnDial(val);
+    my.dial.on('analogRead', function(val) {
+      my.turnDial(val);
     });
 
-    self.temp.on('analogRead', function(val) {
-      self.currentTemp = val;
+    my.temp.on('analogRead', function(val) {
+      my.currentTemp = val;
     });
 
-    self.touch.on('push', function() {
-      self.doorbell();
+    my.touch.on('push', function() {
+      my.doorbell();
     });
 
     setInterval(function() {
-      self.fireAlarm();
+      my.fireAlarm();
     }, 1000);
   }
 }).start();

@@ -7,7 +7,7 @@ cylon.api({
 });
 
 cylon.robot({
-  name: "doorbot",
+  name: "airlockbot",
   connections: {
     edison: { adaptor: "intel-iot" }
   },
@@ -25,11 +25,11 @@ cylon.robot({
     console.log("Turning dial:", val);
   },
   doorbell: function() {
-    var self = this;
-    self.buzzer.digitalWrite(1);
-    self.turnOn("blue");
+    var my = this;
+    my.buzzer.digitalWrite(1);
+    my.turnOn("blue");
     setTimeout(function() {
-      self.reset();
+      my.reset();
     }, 1000);
   },
   turnOn: function(color) {
@@ -41,27 +41,27 @@ cylon.robot({
     this.green.turnOff();
   },
   reset: function() {
-    console.log("Doorbot ready");
+    console.log("Airlock ready");
     this.turnOn("green");
     this.buzzer.digitalWrite(0);
   },
-  work: function(self) {
-    self.reset();
+  work: function(my) {
+    my.reset();
 
-    self.button.on('push', function() {
-      self.turnOn("blue");
+    my.button.on('push', function() {
+      my.turnOn("blue");
     });
 
-    self.button.on('release', function() {
-      self.reset();
+    my.button.on('release', function() {
+      my.reset();
     });
 
-    self.dial.on('analogRead', function(val) {
-      self.turnDial(val);
+    my.dial.on('analogRead', function(val) {
+      my.turnDial(val);
     });
 
-    self.touch.on('push', function() {
-      self.doorbell();
+    my.touch.on('push', function() {
+      my.doorbell();
     });
   }
 }).start();

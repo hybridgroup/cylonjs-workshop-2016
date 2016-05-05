@@ -1,7 +1,7 @@
 var cylon = require("cylon");
 
 cylon.robot({
-  name: "doorbot",
+  name: "airlockbot",
   connections: {
     edison: { adaptor: "intel-iot" }
   },

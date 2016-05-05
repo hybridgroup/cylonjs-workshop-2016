@@ -1,7 +1,7 @@
 var cylon = require("cylon");
 
 cylon.robot({
-  name: "doorbot",
+  name: "airlockbot",
   connections: {
     edison: { adaptor: "intel-iot" }
   },
@@ -20,18 +20,18 @@ cylon.robot({
     this.green.turnOff();
   },
   reset: function() {
-    console.log("Doorbot ready");
+    console.log("Airlock ready");
     this.turnOn("green");
   },
-  work: function(self) {
-    self.reset();
+  work: function(my) {
+    my.reset();
 
-    self.button.on('push', function() {
-      self.turnOn("blue");
+    my.button.on('push', function() {
+      my.turnOn("blue");
     });
 
-    self.button.on('release', function() {
-      self.reset();
+    my.button.on('release', function() {
+      my.reset();
     });
   }
 }).start();
